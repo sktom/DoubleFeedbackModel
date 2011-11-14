@@ -1,18 +1,19 @@
 
-class Hash
-  alias original_method_missing method_missing
-  def method_missing sym_method
-    self[sym_method] || original_method_missing
-  end
-end
-
 module XML
 
-  class Document < Hash
+  class Element < Hash
+    include Module.new{
+      def method_missing arg
+        $count += 1
+        self[arg] || super(arg)
+      end
+    }
+  end
 
-    def initialize(xml)
-      stream = File.open(xml, 'r:utf-8')
-      Kernel.send(:define_method, :read_line) do
+  class Document < Element
+    def initialize xml
+      stream = File.open xml, 'r:utf-8'
+      Kernel.send :define_method, :read_line do
         @line = stream.readline
       end
 
@@ -28,7 +29,7 @@ module XML
           ans_chain = ''
           @ans.each do |ans|
             ans_chain += "[:#{ans}]"
-            eval "self#{ans_chain} ||= {}"
+            eval "self#{ans_chain} ||= Element.new"
           end
 
           eval "self[:#{@ans.join('][:')}][:#{$1}] = #{$2}"
@@ -43,5 +44,4 @@ module XML
 
 
 end
-
 

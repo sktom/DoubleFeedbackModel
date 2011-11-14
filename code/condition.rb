@@ -1,5 +1,5 @@
 
-require './xmlparser'
+require '../lib/xmlparser'
 
-Condition = XML::Document.new 'condition2'
+Cond = XML::Document.new '../cond/condition'
 
