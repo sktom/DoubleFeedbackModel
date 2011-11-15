@@ -4,7 +4,6 @@ module XML
   class Element < Hash
     include Module.new{
       def method_missing arg
-        $count += 1
         self[arg] || super(arg)
       end
     }

@@ -14,14 +14,14 @@ class << Market
     @agentList = Array.new(number).map{Agent.new}
   end
 
-  def test term
+  def test enough_ticks
     @cur_time = 0
     @last_time = @cur_time
     @cur_rate = Cond.const.OriginalRate
     @log = [{:dt => 1, :dr => 0.01, :rate => @cur_rate}] * Cond.const.Leeway
     set_agents Cond.const.N
 
-    term.times do |time|
+    until @log.count - Cond.const.Leeway > enough_ticks do
       @cur_time += Cond.const.dt
       @agentList.each do |agent|
         agent.update_rate
